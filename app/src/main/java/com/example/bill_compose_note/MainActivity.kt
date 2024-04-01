@@ -26,7 +26,10 @@ class MainActivity : ComponentActivity() {
 //                }
 //            }
 
-            HazeApp()
+//            HazeApp() //模糊測試
+//            LazyColumnWithNestedScrollInteropEnabled()//滑動效果（OK）
+            ColumnWithVerticalScrollInteropEnabled()//(OK)
+//            NestedLazyColumns()
 //            CreditCardSample()
         }
     }

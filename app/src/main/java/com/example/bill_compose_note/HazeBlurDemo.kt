@@ -263,7 +263,8 @@ fun BottomBarTabs(
     }
 }
 
-sealed class BottomBarTab(val title: String, val icon: ImageVector, val color: Color) {
+//TODO Bill 感覺之後要這樣寫比較好
+sealed class BottomBarTab(var title: String, val icon: ImageVector, val color: Color) {
     data object Profile : BottomBarTab(
         title = "Profile",
         icon = Icons.Rounded.Person,
@@ -282,7 +283,9 @@ sealed class BottomBarTab(val title: String, val icon: ImageVector, val color: C
 }
 
 val tabs = listOf(
-    BottomBarTab.Profile,
+    BottomBarTab.Profile.apply {
+        this.title = "123" //如果想改的話可以這樣 吧？
+    },
     BottomBarTab.Home,
     BottomBarTab.Settings,
 )

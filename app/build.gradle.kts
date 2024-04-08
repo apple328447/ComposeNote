@@ -67,9 +67,8 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    //忘記這啥
+    //Coil 库为 Jetpack Compose 提供的图像加载库
     implementation("io.coil-kt:coil-compose:2.6.0")
-
     //Compose Constraintlayout
     implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     // 毛玻璃效果

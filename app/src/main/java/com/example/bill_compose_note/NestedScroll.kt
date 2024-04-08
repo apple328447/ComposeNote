@@ -1,5 +1,7 @@
 package com.example.bill_compose_note
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -32,6 +35,7 @@ import androidx.compose.ui.unit.dp
 //@Preview
 @Composable
 fun LazyColumnWithNestedScrollInteropEnabled() {
+
     LazyColumn(
         modifier = Modifier.nestedScroll(
             rememberNestedScrollInteropConnection()
@@ -59,6 +63,31 @@ fun LazyColumnWithNestedScrollInteropEnabled() {
                 contentAlignment = Alignment.Center
             ) {
                 Text(item.toString())
+            }
+        }
+    }
+}
+
+/**
+ * 取消overScroll effect效果
+ * */
+@OptIn(ExperimentalFoundationApi::class)
+@Preview
+@Composable
+fun TestCompositionLocalProvider(){
+    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+        LazyColumn{
+            items(10) { item ->
+                Box(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .height(56.dp)
+                        .fillMaxWidth()
+                        .background(Color.Gray),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(item.toString())
+                }
             }
         }
     }

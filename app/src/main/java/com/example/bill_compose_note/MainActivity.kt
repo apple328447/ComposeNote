@@ -28,9 +28,10 @@ class MainActivity : ComponentActivity() {
 
 //            HazeApp() //模糊測試
 //            LazyColumnWithNestedScrollInteropEnabled()//滑動效果（OK）
-            ColumnWithVerticalScrollInteropEnabled()//(OK)
+//            ColumnWithVerticalScrollInteropEnabled()//(OK)
 //            NestedLazyColumns()
 //            CreditCardSample()
+            TestCompositionLocalProvider()//測試取消overScroll effect效果
         }
     }
 }

@@ -31,7 +31,8 @@ class MainActivity : ComponentActivity() {
 //            ColumnWithVerticalScrollInteropEnabled()//(OK)
 //            NestedLazyColumns()
 //            CreditCardSample()
-            TestCompositionLocalProvider()//測試取消overScroll effect效果
+//            TestCompositionLocalProvider()//測試取消overScroll effect效果
+            RemoveClickEffect()//取消點擊反饋動畫
         }
     }
 }

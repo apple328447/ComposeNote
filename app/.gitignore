@@ -1,1 +1,49 @@
-/build
+# 忽略自动生成的目录和文件
+/build/
+/captures/
+/gradle/
+/local.properties
+/.idea/
+
+# 忽略系统生成的文件
+.DS_Store
+Thumbs.db
+
+# 忽略构建工具生成的文件
+/*.apk
+/*.ap_
+/*.class
+/.externalNativeBuild
+/.cxx/
+
+# 忽略日志和临时文件
+*.log
+*.tmp
+
+# 忽略 Android Studio 配置和缓存文件
+/.gradle/
+/.idea/
+/.metadata/
+/captures/
+/out/
+
+# 忽略使用 ProGuard 生成的文件
+/proguard/
+
+# 忽略用户特定的文件和配置
+/gradle-wrapper.jar
+/gradle-wrapper.properties
+/local.properties
+
+# 忽略模拟器配置和 AVD 文件
+/.android/
+/avd/
+
+# 忽略系统配置
+/.synchronizationToken
+
+# 忽略 Crashlytics 生成的文件
+/crashlytics.properties
+
+# 忽略日志文件
+/*.log

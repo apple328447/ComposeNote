@@ -32,7 +32,8 @@ class MainActivity : ComponentActivity() {
 //            NestedLazyColumns()
 //            CreditCardSample()
 //            TestCompositionLocalProvider()//測試取消overScroll effect效果
-            RemoveClickEffect()//取消點擊反饋動畫
+//            RemoveClickEffect()//取消點擊反饋動畫
+            TabView()//測試TabLayout
         }
     }
 }

@@ -29,8 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+@Preview
 @Composable
 fun TabView() {
     val tabs = listOf(
@@ -45,14 +47,24 @@ fun TabView() {
         ScrollableTabRow(
             selectedTabIndex = 0,
             edgePadding = 16.dp,
-            contentColor = Color.Gray,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    color = Color.Black,
-                    modifier = Modifier
-                        .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                        .fillMaxWidth()
-                )
+            containerColor = Color.Green, //TODO Bill 這樣看效果比較明顯
+            contentColor = Color.Red,
+//            indicator = { tabPositions ->
+//                TabRowDefaults.Indicator(
+//                    color = Color.Black,
+//                    modifier = Modifier
+//                        .tabIndicatorOffset(tabPositions[selectedTabIndex])
+//                        .fillMaxWidth()
+//                )
+//            }
+
+            /**
+             * 這樣就可以移除底線跟選取底線
+             * */
+            indicator = {
+
+            }, divider = {
+
             }
         ) {
             tabs.forEachIndexed { index, tab ->
@@ -78,24 +90,26 @@ fun TabView() {
                 )
             }
         }
-        when (selectedTabIndex) {
-            0 -> {
-                TabPage(selectedTabIndex)
-                //Composible for tab1
-            }
-            1 -> {
-                TabPage(selectedTabIndex)
-                //Composible for tab2
-            }
-            2 -> {
-                TabPage(selectedTabIndex)
-                //Composible for tab3
-            }
-            3 -> {
-                TabPage(selectedTabIndex)
-                //Composible for tab4
-            }
-        }
+//        when (selectedTabIndex) {
+//            0 -> {
+//                TabPage(selectedTabIndex)
+//                //Composible for tab1
+//            }
+//            1 -> {
+//                TabPage(selectedTabIndex)
+//                //Composible for tab2
+//            }
+//            2 -> {
+//                TabPage(selectedTabIndex)
+//                //Composible for tab3
+//            }
+//            3 -> {
+//                TabPage(selectedTabIndex)
+//                //Composible for tab4
+//            }
+//        }
+        //TODo Bill 這樣寫也可以，上面是如果要判斷不同狀況使用不同頁面，有點類似Adapter的getItemViewType
+        TabPage(selectedTabIndex)
     }
 }
 

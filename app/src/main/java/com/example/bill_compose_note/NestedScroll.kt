@@ -100,14 +100,15 @@ fun TestCompositionLocalProvider(){
 @Composable
 fun ColumnWithVerticalScrollInteropEnabled() {
     Column(
-        modifier = Modifier.verticalScroll(rememberScrollState()),
+        modifier = Modifier.verticalScroll(rememberScrollState())
+            .nestedScroll(rememberNestedScrollInteropConnection()) //讓Column可滑動 -> 沒這行會變成各區塊的RV分開滑動
     ) {
         RowListView(listOf("111", "222", "333", "444", "555"))
         Spacer(modifier = Modifier.height(16.dp)) //設置項目間的距離
         ColumnListView(listOf("AAA", "BBB", "CCC", "DDD"))
         Spacer(modifier = Modifier.height(16.dp))
         Text("This is a Lazy Column")
-        LazyColumn(modifier = Modifier.height(2000.dp)) { //這裡因為跟最外層的方向是一樣的，所以要設置高度
+        LazyColumn(modifier = Modifier.height(2000.dp)) { //這裡因為跟最外層的方向是一樣的，所以要設置高度**********真他媽重要 不然build不過去
             items(40) { item ->
                 Box(
                     modifier = Modifier

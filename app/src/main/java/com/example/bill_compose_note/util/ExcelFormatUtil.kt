@@ -41,7 +41,6 @@ object ExcelFormatUtil {
                 "\n" +
                 "2024.02.22 星期四\n" +
                 "09:22 徐銘昌 113年管理費+停車費 年繳24340\n" +
-                "09:22 徐銘昌 年繳113年管理費+停車費 24340\n" +
                 "\n" +
                 "11:15 徐銘昌 電費1076\n" +
                 "青菜200\n" +
@@ -52,7 +51,18 @@ object ExcelFormatUtil {
                 "掛號370\n" +
                 "停車費60\n"
 
-        filterText =  originalData.replace("皇太后","").replace("徐銘昌","")//消除使用者的名稱
+        //TODO Bill Test
+        val testData =
+            "2024.02.05 星期一\n" +
+                    "09:22 徐銘昌 113年管理費+停車費 年繳24340\n" + "青菜200\n" + "19:44 徐銘昌 全聯1050\n" + "掃墓祭祀：\n" +
+                    "素食三牲2份1240\n" +
+                    "紅粄6個180\n" +
+                    "發粄2個80\n" +
+                    "豆腐乾10塊150\n"
+                    "金紙銀紙210\n" +
+                    "頻果棗子370"
+
+        filterText =  testData.replace("皇太后","").replace("徐銘昌","")//消除使用者的名稱
             .replace(Regex("星期[一二三四五六日][^\n]*\n"), "")
             .replace(Regex("\\b\\d{2}:\\d{2}\\b\\s*"), "\n")//ex.14:49 -> "\n" 消除時間
             .replace("+","加")
@@ -60,8 +70,10 @@ object ExcelFormatUtil {
             .replace("、","\n")
             .replace("：","")
             .replace("元","")
+            .replace(" ","")
             .replace(Regex("[!@#$%&*]"),"")
             .replaceMonth()
+
 
         // 定義正則表達式，匹配「星期X」及其後面一個字
 //        var filterData2 = ""
@@ -70,13 +82,58 @@ object ExcelFormatUtil {
 
         Log.v("Bill===>>>檢查查filterText","${filterText}")
 
-        // 定義正則表達式，匹配「文字(中文) + 數字」//Regex("([a-zA-Z]+)(\\d+)") ->這個是英文
-        val regexTextNum = Regex("([\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\d+)") // 這個是連在一起 中文數字 (先塞選出這種格式) 主要是處理：「豬肉240雞蛋114」這種偷懶的格式
-        filterText = regexTextNum.replace(filterText) { matchResult ->
-            "${matchResult.groupValues[1]}\n"
+        /**
+         * 定義正則表達式，匹配「文字(中文) + 數字」//Regex("([a-zA-Z]+)(\\d+)") ->這個是英文
+         * (.+?)：非貪婪地匹配前面的描述部分，直到遇到數字。
+         * \s：匹配描述和數字之間的空白字符。
+         * (\d+)：匹配數字部分。
+         * */
+//        val regexTextNum2 = Regex("(.+?)(\\d+)(\\d+)") // 這個是連在一起 中文數字 (先塞選出這種格式) 主要是處理：「豬肉240雞蛋114」這種偷懶的格式
+//        val regexTextNum2 = Regex("(\\d+[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\d+[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF])(\\d+)") // 這個是連在一起 中文數字 (先塞選出這種格式) 主要是處理：「豬肉240雞蛋114」這種偷懶的格式
+        // 定義正則表達式
+        val regexTextNum2 = Regex("^(.*?)(\\d+)")
+
+
+        filterText = regexTextNum2.replace(filterText) { matchResult ->
+            val description = matchResult.groupValues[1] // 取出描述部分
+            val amount = matchResult.groupValues[2] // 取出數字部分
+            Log.e("Bill===>>>檢查查filterText2","${matchResult.groupValues[0]} ： ${matchResult.groupValues[1]} : ${matchResult.groupValues[2]}")
+            "${matchResult.groupValues[0]} ： ${matchResult.groupValues[1]} : ${matchResult.groupValues[2]}" // 返回格式化後的結果
         }
+
+
+//        val regexTextNum = Regex("([\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\d+)") // 這個是連在一起 中文數字 (先塞選出這種格式) 主要是處理：「豬肉240雞蛋114」這種偷懶的格式
+//        filterText = regexTextNum.replace(filterText) { matchResult ->
+//            "${matchResult.groupValues[1]}\n"
+//        }
         Log.d("Bill===>>>檢查查filterText2","${filterText}")
         val regexTextAndNum = Regex("([\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+)(\\d+)") //這個是分段 中文「＋」數字 (才能把中間插入空白)
+        //TODO Bill 測試
+//        val regexTextAndNum = Regex("(\\d+[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\d+[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+)(\\d+)") //這個是分段 中文「＋」數字 (才能把中間插入空白)
+
+
+        val regex222 = Regex("^(.*?)(\\d+)$")
+        val texts = listOf(
+            "素食三牲2份1240",
+            "紅粄6個180",
+            "發粄2個80",
+            "這是一個不符合的格式",
+            "金紙銀紙210"
+        )
+
+        // 檢查每個字串是否符合格式
+        texts.forEach { text ->
+//            Log.v("Bill===>>>>>>","${it}")
+            Log.v("Bill===>>>>>>","${text} -> ${regex222.matches(text)}")
+            var aaaa: String = regex222.replace(text){ matchResult ->
+                val description = matchResult.groupValues[1] // 取出描述部分
+                val amount = matchResult.groupValues[2] // 取出數字部分
+                "${matchResult.groupValues[0]} ： ${matchResult.groupValues[1]} : ${matchResult.groupValues[2]}" // 返回格式化後的結果
+            }
+            Log.v("Bill===>>>>>>","${aaaa}")
+        }
+
+
         textAndNumList = regexTextAndNum.replace(filterText) { matchResult ->
             "${matchResult.groupValues[1]} ${matchResult.groupValues[2]}"
         }//篩選成項目+金額

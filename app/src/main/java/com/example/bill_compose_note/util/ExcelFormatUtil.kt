@@ -25,32 +25,47 @@ object ExcelFormatUtil {
     )
 
     fun initData():String {
-        var filterText:String
+        var filterText:List<String>
+        var filterText2:MutableList<String> = mutableListOf()
+
         val textAndNumList:List<String>
         val dateTextAndNumList:MutableList<String> = mutableListOf()
 
-        val originalData = "2024.02.05 星期一\n" +
-                "22:32 徐銘昌 加油1036\n" +
-                "全聯1575\n" +
-                "2024.02.06 星期二\n" +
-                "19:19 徐銘昌 香+金銀紙530\n" +
-                "素雞2組1470\n" +
-                "2024.02.16 星期五\n" +
-                "09:47 徐銘昌 全聯：1575\n" +
-                "雞蛋143\n" +
+        val originalData = "2023.08.01 星期二\n" +
+                "22:25 徐銘昌 加油1048\n" +
+                "全聯：日用雜貨900\n" +
+                "市場：疏菜120\n" +
+                "豬肉240\n" +
+                "雞蛋120\n" +
                 "\n" +
-                "2024.02.22 星期四\n" +
-                "09:22 徐銘昌 113年管理費+停車費 年繳24340\n" +
-                "09:22 徐銘昌 年繳113年管理費+停車費 24340\n" +
+                "2023.08.04 星期五\n" +
+                "14:49 皇太后 7月機車加油569、\n" +
+                "14:49 皇太后 貓罐頭1100\n" +
+                "14:49 皇太后 房屋火險1960\n" +
+                "14:50 皇太后 機車保養560\n" +
+                "2023.08.10 星期四\n" +
+                "19:23 徐銘昌 全聯：日用雜貨900\n" +
+                "雞蛋114\n" +
+                "房貸12000\n" +
                 "\n" +
-                "11:15 徐銘昌 電費1076\n" +
-                "青菜200\n" +
-                "全聯700\n" +
-                "\n" +
-                "2024.02.27 星期二\n" +
-                "19:44 徐銘昌 全聯1050\n" +
-                "掛號370\n" +
-                "停車費60\n"
+                "19:52 皇太后 房貸3870\n" +
+                "2023.08.15 星期二\n" +
+                "11:08 徐銘昌 全聯：日用雜貨730\n" +
+                "豬肉275\n" +
+                "國保1186\n" +
+                "2023.08.16 星期三\n" +
+                "21:52 皇太后 電信費3280、貓罐1100、回診掛號200、加油95\n" +
+                "2023.08.17 星期四\n" +
+                "19:46 徐銘昌 全聯：日用雜貨650\n" +
+                "雞蛋+鹹蛋204\n" +
+                "2023.08.18 星期五\n" +
+                "10:07 皇太后 8月雜支2000、電費1936（軒）\n" +
+                "2023.08.21 星期一\n" +
+                "19:39 皇太后 你確認ㄧ下投保內容，沒需要修改就要繳費了\n" +
+                "19:39 皇太后 圖片\n" +
+                "2023.08.25 星期五\n" +
+                "19:26 徐銘昌 全聯：日用雜貨水果1501\n" +
+                "壽險8704\n"
 
         filterText =  originalData.replace("皇太后","").replace("徐銘昌","")//消除使用者的名稱
             .replace(Regex("星期[一二三四五六日][^\n]*\n"), "")
@@ -62,19 +77,53 @@ object ExcelFormatUtil {
             .replace("元","")
             .replace(Regex("[!@#$%&*]"),"")
             .replaceMonth()
+            .split("\n") // 用換行符號把資料型別轉成list
+            .filter { it.isNotEmpty() }// 移除空資料 把只有換行符號的去除
 
         // 定義正則表達式，匹配「星期X」及其後面一個字
 //        var filterData2 = ""
 //        val regex = Regex("星期[一二三四五六日][^\n]*\n")
 //        filterData2 = regex.replace(filterData,"") // .replace(Regex("星期[一二三四五六日][^\n]*\n"), "") 同一種寫法
 
-        Log.v("Bill===>>>檢查查filterText","${filterText}")
+        Log.v("Bill===>>>檢查 - 第一次篩選玩的字串","${filterText}")
 
         // 定義正則表達式，匹配「文字(中文) + 數字」//Regex("([a-zA-Z]+)(\\d+)") ->這個是英文
-        val regexTextNum = Regex("([\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\d+)") // 這個是連在一起 中文數字 (先塞選出這種格式) 主要是處理：「豬肉240雞蛋114」這種偷懶的格式
+       // val regexTextNum = Regex("([\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\d+)") // 這個是連在一起 中文數字 (先塞選出這種格式) 主要是處理：「豬肉240雞蛋114」這種偷懶的格式
+        val regexTextNum = Regex("^(.*?)(\\d+)$")
+        filterText.forEach {  text ->
+
+
+            if (regexTextNum.matches(text)) {
+                var aaaa: String = regexTextNum.replace(text){ matchResult ->
+                    val description = matchResult.groupValues[1] // 取出描述部分
+                    val amount = matchResult.groupValues[2] // 取出數字部分
+                    "$amount $description" // 返回格式化後的結果
+                }
+                filterText2.add(aaaa)
+                println("格式正確")
+            } else {
+                filterText2.add(text)
+                println("格式不正確")
+            }
+        }
+
+/*
+
+
         filterText = regexTextNum.replace(filterText) { matchResult ->
             "${matchResult.groupValues[1]}\n"
         }
+        Log.v("Bill===>>>檢查 - 第二次篩選  (中文) + 數字  字串","${filterText}")
+
+        val regex = Regex("[\\u4e00-\\u9fa5]+[0-9]+[\\u4e00-\\u9fa5]+[0-9]+")
+        filterText = regex.replace(filterText) { matchResult ->
+
+            Log.d("Bill===>>>檢查 - 中文數字中文數字 ","${matchResult.groupValues[0]} / ${matchResult.groupValues[1]} / ${matchResult.groupValues[2]}")
+            "${matchResult.groupValues[1]}\n"
+
+        }
+
+
         Log.d("Bill===>>>檢查查filterText2","${filterText}")
         val regexTextAndNum = Regex("([\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+)(\\d+)") //這個是分段 中文「＋」數字 (才能把中間插入空白)
         textAndNumList = regexTextAndNum.replace(filterText) { matchResult ->
@@ -82,8 +131,10 @@ object ExcelFormatUtil {
         }//篩選成項目+金額
             .split("\n") // 用換行符號把資料型別轉成list
             .filter { it.isNotEmpty() }// 移除空資料 把只有換行符號的去除
+*/
 
-        textAndNumList.forEach {
+
+        filterText2.forEach {
             Log.v("Bill===>>>檢查查filterData3","${it}")
         }
 
@@ -91,7 +142,7 @@ object ExcelFormatUtil {
         //TODo Bill 把時間加到前面
         val timeRegex = Regex("\\b\\d{1,4}.\\b\\d{1,2}.\\b\\d{2}")
         var titleDate = "項目添加時間"
-        textAndNumList.forEach { data ->
+        filterText2.forEach { data ->
             if(timeRegex.containsMatchIn(data)){
                 titleDate =(timeRegex.find(data)?.value?:"沒找到資料").replace(".","/")
                 Log.d("Bill===抓到的日期", (timeRegex.find(data)?.value?:"沒找到資料").replace(".","/") + "支出：")
@@ -101,7 +152,7 @@ object ExcelFormatUtil {
             }
         }
         filterType(dateTextAndNumList)
-        return filterText
+        return "filterText2"
     }
 
     //分類帳款項目
@@ -128,7 +179,7 @@ object ExcelFormatUtil {
 
 
         // 這個是最後輸出的格式： ex.2023/08/15 豬肉 275 食材
-        val regexDateTextNumCategory = Regex("\\b\\d{4}/\\d{1,2}/\\d{1,2}\\b \\b[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\b \\b\\d+\\b \\b[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\b")
+        val regexDateTextNumCategory = Regex("\\b\\d{4}/\\d{1,2}/\\d{1,2}\\b \\b\\d+\\b \\b[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\b \\b[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\b")
         val regex = Regex("\\d{4}/\\d{1,2}/\\d{1,2} [\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+ \\d+ [\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+")
 
         val correctFormatList = addDateCategoryList.filter { regexDateTextNumCategory.matches(it) }.toMutableList()

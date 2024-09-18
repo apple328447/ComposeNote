@@ -3,11 +3,18 @@ package com.example.bill_compose_note.util
 import android.util.Log
 /**
  * 錯誤格式：
- * 113年管理費+停車費 年繳24340
- * 素雞2組1470
- * 正確格式：
- * 113年管理費停車費(年繳) 2
+ * 1. 全聯：雜貨食品
+ *   1420         ->全聯：雜貨食品1420
  *
+ * 2. 直接貼照片
+ *
+ * 3. 2包水餃256 -> 水餃2包256
+ *
+ * 4. 衛生紙，水果，水餃，697元 -> 衛生紙+水果+水餃+697元  豬肉，排骨620  -> 豬肉+排骨620
+ *
+ * 5. wakamoto,840 -> wakamoto840
+ *
+ * 6. 水果50肥料100青菜90全聯490 -> 要加換行符號
  * */
 object ExcelFormatUtil {
     var addDateCategoryList:MutableList<String> = mutableListOf()

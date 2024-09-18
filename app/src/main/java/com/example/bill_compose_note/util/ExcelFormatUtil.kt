@@ -74,7 +74,7 @@ object ExcelFormatUtil {
                 "19:26 徐銘昌 全聯：日用雜貨水果1501\n" +
                 "壽險8704\n"
 
-        filterText =  originalData.replace("皇太后","").replace("徐銘昌","")//消除使用者的名稱
+        filterText =  originalData.replace("皇太后","").replace("徐銘昌","").replace("峰","")//消除使用者的名稱
             .replace(Regex("星期[一二三四五六日][^\n]*\n"), "")
             .replace(Regex("\\b\\d{2}:\\d{2}\\b\\s*"), "\n")//ex.14:49 -> "\n" 消除時間
             .replace("+","加")
@@ -82,6 +82,9 @@ object ExcelFormatUtil {
             .replace("、","\n")
             .replace("：","")
             .replace("元","")
+            .replace("。","\n")
+            .replace("  ","\n")
+            .replace("，","\n")
             .replace(Regex("[!@#$%&*]"),"")
             .replaceMonth()
             .split("\n") // 用換行符號把資料型別轉成list
@@ -187,13 +190,18 @@ object ExcelFormatUtil {
 
         // 這個是最後輸出的格式： ex.2023/08/15 豬肉 275 食材
         val regexDateTextNumCategory = Regex("\\b\\d{4}/\\d{1,2}/\\d{1,2}\\b \\b\\d+\\b \\b[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\b \\b[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\b")
+        // 這個是最後輸出的格式： ex.2024/03/15 180 紅粄6個 其他雜項支出
+        val regexDateTextNumCategoryWithUnit = Regex("\\b\\d{4}/\\d{1,2}/\\d{1,2}\\b \\b\\d+\\b \\b[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\d+[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\b \\b[\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+\\b")
+
         val regex = Regex("\\d{4}/\\d{1,2}/\\d{1,2} [\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+ \\d+ [\\u4E00-\\u9FFF\\u3400-\\u4DBF\\uF900-\\uFAFF]+")
 
-        val correctFormatList = addDateCategoryList.filter { regexDateTextNumCategory.matches(it) }.toMutableList()
-        val errorFormatList = addDateCategoryList.filterNot { regexDateTextNumCategory.matches(it) }.toMutableList()
+        val correctFormatList = addDateCategoryList.filter { regexDateTextNumCategory.matches(it) || regexDateTextNumCategoryWithUnit.matches(it) }.toMutableList()
+        val errorFormatList = addDateCategoryList.filterNot { regexDateTextNumCategory.matches(it) || regexDateTextNumCategoryWithUnit.matches(it)  }.toMutableList()
         Log.i("===輸出結果===","======================開始輸出結果======================")
 
         Log.d("===輸出結果===","正確的格式資料：")
+
+
         correctFormatList.forEach {
             Log.d("===輸出結果===","${it}")
         }
